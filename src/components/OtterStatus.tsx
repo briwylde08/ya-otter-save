@@ -43,11 +43,11 @@ const OTTER_MESSAGES: Record<OtterMood, { emoji: string; message: string }> = {
   },
   calm: {
     emoji: "🦦😌",
-    message: "Otter is calm (healthy position)",
+    message: "Otter is chillin'",
   },
   nervous: {
     emoji: "🦦😰",
-    message: "Otter is nervous (health factor low!)",
+    message: "Otter is excited!",
   },
   delivered: {
     emoji: "🦦📦",
@@ -86,7 +86,7 @@ export function OtterStatus({ mood, healthFactor, className = "" }: OtterStatusP
       <span className="text-3xl" role="img" aria-label="otter">
         {emoji}
       </span>
-      <p className="text-cyan-800 dark:text-cyan-200 font-medium">{message}</p>
+      <p className="text-cyan-800 dark:text-cyan-200 font-medium text-lg" style={{ fontFamily: 'var(--font-fredoka)' }}>{message}</p>
       {healthFactor !== undefined && healthFactor !== Infinity && (
         <span
           className={`ml-auto text-sm font-mono ${
