@@ -183,8 +183,10 @@ export default function Home() {
       <div className="max-w-2xl mx-auto px-4 py-8 relative z-20">
         {/* Header */}
         <header className="text-center mb-8">
-          <h1 className="text-5xl font-title text-cyan-600 dark:text-cyan-400 mb-2 drop-shadow-sm">
+          <h1 className="text-5xl font-title text-cyan-600 dark:text-cyan-400 mb-2 drop-shadow-sm flex items-center justify-center gap-3">
+            <span className="text-4xl">🌊</span>
             Ya Otter Save
+            <span className="text-4xl">🌊</span>
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             On-ramp MXN to CETES, swap to USDC, earn yield on Blend
