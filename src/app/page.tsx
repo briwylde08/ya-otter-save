@@ -14,12 +14,14 @@ import {
   TransactionTracker,
   TrackedTransaction,
 } from "@/components/TransactionTracker";
+import { DashboardSkeleton } from "@/components/Skeleton";
 import { formatBalance, CETES_ISSUER, USDC_ISSUER } from "@/lib/stellar/assets";
 import {
   demoStateSchema,
   transactionsArraySchema,
   safeParseLocalStorage,
 } from "@/lib/validation";
+import { celebrateTransaction } from "@/lib/confetti";
 
 // Helper to extract balance from wallet balances array
 function getAssetBalance(
@@ -177,7 +179,7 @@ export default function Home() {
   const hasAnyBalance = hasCetes || hasUsdc || hasBlendPosition;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <main className="min-h-screen bg-gradient-to-br from-cyan-100 via-blue-50 to-purple-100 dark:from-gray-900 dark:via-cyan-950 dark:to-blue-950">
       <SwimmingOtter />
 
       <div className="max-w-2xl mx-auto px-4 py-8 relative z-20">
@@ -228,10 +230,13 @@ export default function Home() {
           {currentView === "connect" && <WalletConnect wallet={wallet} />}
 
           {/* Dashboard */}
-          {currentView === "dashboard" && wallet.publicKey && (
+          {currentView === "dashboard" && wallet.publicKey && !stateLoaded && (
+            <DashboardSkeleton />
+          )}
+          {currentView === "dashboard" && wallet.publicKey && stateLoaded && (
             <div className="space-y-6">
               {/* Balances Card */}
-              <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+              <div className="p-6 glass-card rounded-xl shadow-lg">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Your Balances
                 </h2>
@@ -292,7 +297,7 @@ export default function Home() {
               </div>
 
               {/* Actions Card */}
-              <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+              <div className="p-6 glass-card rounded-xl shadow-lg">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Actions
                 </h2>
@@ -372,6 +377,7 @@ export default function Home() {
                     undefined,
                     "On-ramped via Etherfuse"
                   );
+                  celebrateTransaction();
                   // Refresh to get actual on-chain balance
                   wallet.refreshBalances();
                   setCurrentView("dashboard");
@@ -403,6 +409,7 @@ export default function Home() {
                     txHash,
                     "Swapped via Stellar DEX"
                   );
+                  celebrateTransaction();
                   wallet.refreshBalances();
                   setCurrentView("dashboard");
                 }}
@@ -432,6 +439,7 @@ export default function Home() {
                     txHash,
                     "Deposited to Blend lending pool"
                   );
+                  celebrateTransaction();
                   setDemoState((prev) => {
                     const existingDeposit = parseFloat(prev.depositedAmount) || 0;
                     const newTotal = existingDeposit + parseFloat(newDepositAmount);
@@ -460,7 +468,7 @@ export default function Home() {
                 </svg>
                 Back to Dashboard
               </button>
-              <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+              <div className="p-6 glass-card rounded-xl shadow-lg">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Earning Yield
                 </h2>
@@ -540,6 +548,7 @@ export default function Home() {
                     txHash,
                     isFullWithdraw ? "Withdrew all funds" : "Partial withdrawal"
                   );
+                  celebrateTransaction();
                   setDemoState((prev) => ({
                     ...prev,
                     depositedAmount: remainingDeposit,
@@ -579,6 +588,7 @@ export default function Home() {
                     txHash,
                     "Swapped via Stellar DEX"
                   );
+                  celebrateTransaction();
                   wallet.refreshBalances();
                   setCurrentView("dashboard");
                 }}
@@ -608,6 +618,7 @@ export default function Home() {
                     txHash,
                     txHash ? "Off-ramped via Etherfuse" : "Off-ramped via Etherfuse (pending settlement)"
                   );
+                  celebrateTransaction();
                   wallet.refreshBalances();
                   setCurrentView("dashboard");
                 }}

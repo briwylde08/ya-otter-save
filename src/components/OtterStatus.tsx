@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export type OtterMood =
   | "waiting"
@@ -64,6 +64,13 @@ const OTTER_MESSAGES: Record<OtterMood, { emoji: string; message: string }> = {
 };
 
 export function OtterStatus({ mood, healthFactor, className = "" }: OtterStatusProps) {
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  const handleOtterClick = () => {
+    setIsSpinning(true);
+    setTimeout(() => setIsSpinning(false), 600);
+  };
+
   const { emoji, message } = useMemo(() => {
     // Override mood based on health factor if provided
     if (healthFactor !== undefined) {
@@ -83,9 +90,17 @@ export function OtterStatus({ mood, healthFactor, className = "" }: OtterStatusP
     <div
       className={`flex items-center gap-3 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 rounded-lg border border-cyan-200 dark:border-cyan-800 ${className}`}
     >
-      <span className="text-3xl" role="img" aria-label="otter">
+      <button
+        onClick={handleOtterClick}
+        className={`text-3xl cursor-pointer transition-transform hover:scale-110 ${
+          isSpinning ? "animate-spin" : ""
+        }`}
+        style={{ animationDuration: "0.6s" }}
+        role="img"
+        aria-label="otter"
+      >
         {emoji}
-      </span>
+      </button>
       <p className="text-cyan-800 dark:text-cyan-200 font-medium text-lg">{message}</p>
       {healthFactor !== undefined && healthFactor !== Infinity && (
         <span

@@ -20,23 +20,23 @@ export function SwimmingOtter() {
   useEffect(() => {
     const swim = () => {
       setPosition((prev) => {
-        // Random movement with bounds
-        const newX = prev.x + (Math.random() - 0.45) * 8;
-        const newY = prev.y + (Math.random() - 0.5) * 4;
+        // Random movement with bounds (slower, gentler movements)
+        const newX = prev.x + (Math.random() - 0.45) * 3;
+        const newY = prev.y + (Math.random() - 0.5) * 1.5;
 
         // Bounce off edges
         const clampedX = Math.max(5, Math.min(85, newX));
         const clampedY = Math.max(5, Math.min(70, newY));
 
         // Update direction based on movement
-        if (newX > prev.x + 0.5) setDirection("right");
-        else if (newX < prev.x - 0.5) setDirection("left");
+        if (newX > prev.x + 0.3) setDirection("right");
+        else if (newX < prev.x - 0.3) setDirection("left");
 
         return { x: clampedX, y: clampedY };
       });
     };
 
-    const interval = setInterval(swim, 150);
+    const interval = setInterval(swim, 400);
     return () => clearInterval(interval);
   }, []);
 
@@ -99,10 +99,11 @@ export function SwimmingOtter() {
 
       {/* The Otter */}
       <div
-        className="absolute transition-all duration-150 ease-linear"
+        className="absolute transition-all ease-linear scale-150"
         style={{
           left: `${position.x}%`,
           top: `${position.y}%`,
+          transitionDuration: "400ms",
           transform: `scaleX(${direction === "left" ? -1 : 1}) ${
             isUnderwater ? "translateY(20px)" : ""
           }`,
@@ -238,27 +239,27 @@ export function SwimmingOtter() {
         }
 
         .animate-swim {
-          animation: swim 0.8s ease-in-out infinite;
+          animation: swim 1.5s ease-in-out infinite;
         }
 
         .animate-tail {
-          animation: tail 0.4s ease-in-out infinite;
+          animation: tail 0.8s ease-in-out infinite;
         }
 
         .animate-paddle-left {
-          animation: paddle-left 0.5s ease-in-out infinite;
+          animation: paddle-left 1s ease-in-out infinite;
         }
 
         .animate-paddle-right {
-          animation: paddle-right 0.5s ease-in-out infinite;
+          animation: paddle-right 1s ease-in-out infinite;
         }
 
         .animate-flipper {
-          animation: flipper 0.6s ease-in-out infinite;
+          animation: flipper 1.2s ease-in-out infinite;
         }
 
         .animate-ripple {
-          animation: ripple 1s ease-in-out infinite;
+          animation: ripple 1.5s ease-in-out infinite;
         }
 
         .animate-bubble {
