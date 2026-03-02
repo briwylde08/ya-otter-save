@@ -107,6 +107,10 @@ XLM acts as a bridge asset because it has the deepest liquidity pools. The path 
 - Yield accrual simulation (demo mode)
 - Partial withdrawal support
 
+**Pool used**: [Blend TestNet V2 Pool](https://stellar.expert/explorer/testnet/contract/CCEBVDYM32YNYCVNRXQKDFFPISJJCV557CDZEIRBEE4NCV4KHPQ44HGF)
+- Pool ID: `CCEBVDYM32YNYCVNRXQKDFFPISJJCV557CDZEIRBEE4NCV4KHPQ44HGF`
+- USDC Contract: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA`
+
 **Gotcha**: Testnet Blend pools use a different USDC issuer than the DEX USDC. This is a known testnet fragmentation issue. We implemented demo mode for Blend operations since real deposits would require bridging between USDC issuers.
 
 ### Phase 5: Off-Ramp Flow (~3 hours)
