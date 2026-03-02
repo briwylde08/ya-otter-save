@@ -91,6 +91,14 @@ Not flat as documentation suggests. Required unwrapping logic.
 - Mock swap fallback when no DEX liquidity exists
 - Trustline checks before swap execution
 
+**How swaps work**: We use `pathPaymentStrictSend` which lets Stellar find the optimal route. There's rarely direct CETES/USDC liquidity, so Horizon's pathfinding typically returns:
+
+```
+CETES → XLM → USDC
+```
+
+XLM acts as a bridge asset because it has the deepest liquidity pools. The path is returned by Horizon's `/paths/strict-send` endpoint - we don't hardcode it.
+
 **Gotcha**: Testnet has minimal DEX liquidity for CETES/USDC pairs. Implemented mock swap mode with realistic exchange rates for demo purposes.
 
 ### Phase 4: Blend Integration (~2 hours)
