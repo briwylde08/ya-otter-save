@@ -7,6 +7,41 @@
 
 ---
 
+## Production Flow: Client vs Anchor Responsibilities
+
+### On-Ramp Flow (MXN → CETES)
+
+| Step | Client (Your App) | Anchor (Etherfuse) |
+|------|-------------------|-------------------|
+| 1 | Generate `customer_id` + `bank_account_id` UUIDs | - |
+| 2 | Store IDs in database (keyed by wallet pubkey) | - |
+| 3 | Request onboarding URL with those IDs | Returns KYC URL |
+| 4 | Redirect user to Etherfuse | - |
+| 5 | - | User completes KYC, binds IDs to their identity |
+| 6 | Request quote (using stored IDs) | Returns quote + SPEI instructions |
+| 7 | Display payment instructions | - |
+| 8 | - | User pays via SPEI (outside app) |
+| 9 | Poll for payment status | Receives fiat, updates status |
+| 10 | - | **Signs & sends CETES to user's wallet** |
+| 11 | Detect tokens arrived, show success | - |
+
+### Off-Ramp Flow (CETES → MXN)
+
+| Step | Client (Your App) | Anchor (Etherfuse) |
+|------|-------------------|-------------------|
+| 1 | Request off-ramp quote | Returns quote + `order_id` |
+| 2 | Build burn tx (send CETES to issuer, memo = order_id) | - |
+| 3 | **User signs transaction** | - |
+| 4 | Submit tx to Stellar | - |
+| 5 | - | Detects burn tx via memo match |
+| 6 | - | Initiates SPEI to user's bank |
+| 7 | Poll for completion | Updates status to `completed` |
+| 8 | Show success | User receives MXN in bank |
+
+**Key insight**: On-ramp = Etherfuse signs the Stellar tx. Off-ramp = User signs the Stellar tx.
+
+---
+
 ## What We Built
 
 A savings application that enables Mexican users to:
