@@ -112,10 +112,38 @@ Etherfuse matches by sender public key + memo, so truncation is safe.
 | Responses are nested under `onramp`/`offramp` keys | Unwrap: `response.onramp \|\| response` |
 | Empty response body on `fiat_received` endpoint | Check `content-length` header, parse text not JSON |
 | Customer ID must match across all calls | Store in cookie, reuse for quotes and orders |
-| Bank Account ID must match onboarding | Use `ETHERFUSE_BANK_ACCOUNT_ID` env var |
+| **Bank Account ID must match onboarding** | **See detailed section below - this cost us 60+ minutes** |
 | Order ID field varies (`orderId`, `id`, `order_id`) | Check all variants when extracting |
 | New orders have indexing delay | Use local state, don't immediately query |
 | Wallet must be registered in Etherfuse dashboard | Complete onboarding flow first |
+
+#### The Bank Account Not Found Issue (60+ minutes of debugging)
+
+**Error**: `Bank account not found`
+
+**What we tried (all failed)**:
+- Generating random `bankAccountId` UUIDs on each request
+- Registering bank accounts via API (kept asking for `presignedUrl`)
+- Using `bankAccountId` from previous onboarding URLs
+- Having user complete the onboarding form multiple times
+
+**Root Cause**: Etherfuse requires **exact ID consistency**. Every quote and order call must use the exact same `customer_id` + `bank_account_id` pair that was used to generate the onboarding URL the user completed.
+
+We kept generating NEW `bankAccountId` UUIDs on each request, so they never matched the one bound during onboarding.
+
+**The Fix**:
+1. Generate ONE `bankAccountId` UUID and save it to `.env.local`
+2. Generate the onboarding URL with that specific ID
+3. User completes onboarding (this binds the IDs together on Etherfuse's side)
+4. Use those SAME IDs for ALL subsequent API calls - forever
+
+```bash
+# .env.local - these IDs are married forever after onboarding
+ETHERFUSE_CUSTOMER_ID=abc123-your-customer-uuid
+ETHERFUSE_BANK_ACCOUNT_ID=def456-your-bank-uuid  # Must match what was used in onboarding URL
+```
+
+**For Production**: Store these per-user in a database, not env vars. Each user gets their own ID pair created during their onboarding flow, and you must persist and reuse them for all that user's future transactions.
 
 ### Stellar Gotchas
 
