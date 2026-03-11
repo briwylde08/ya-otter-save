@@ -1,5 +1,10 @@
 # 🦦 Ya Otter Save
 
+> **WARNING: TESTNET ONLY**
+> This application runs on Stellar Testnet and is for demonstration purposes only. Do not use real funds or rely on this for production use. Testnet tokens have no real value.
+
+**Live Demo**: https://ya-otter-save.vercel.app
+
 A Stellar testnet demo app demonstrating a complete savings flow:
 - **Etherfuse** for MXN ↔ CETES on/off-ramp
 - **Stellar DEX** for CETES ↔ USDC swaps
